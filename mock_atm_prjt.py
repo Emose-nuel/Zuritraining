@@ -2,11 +2,6 @@ from datetime import datetime
 from collections import defaultdict
 import random, re
 
-random.seed(1)
-
-# allowed_users= ['Seyi', 'Mike', 'Love', 'John', 'Samuel', 'Jerimiah']
-# allowed_password =[f'password{i}' for i in allowed_users]
-# Balance = {i:random.randrange(0, 100000) for i in allowed_users}
 database = {'0267962177': ['Seyi', 'Michael', 'seyi.michael@gmail.com', 'passwordSeyi', 24197],
             '0117562516': ['Mike', "Eneramo", 'mike.eneramo@yahoo.com', 'passwordMike', 45144],
             '0856081168': ['Love', 'Manuel', 'love.manuel@gmail.com', 'passwordLove', 38048],
@@ -25,8 +20,8 @@ def response(acc_num):
         else:
             exit()
     except ValueError:
-        print("Please enter a valid number (1 or 2)")
-        response(acc_num)
+        print("You have entered an invalid number")
+        exit()
 
 
 def withdrawalOperation(accountNumberFromUser):
@@ -76,31 +71,14 @@ def generateAccountNumber():
 def logout():
     init()
 
-#
-# def operation_selector(option, acc_num):
-#     option = option #int(input("Please select an option: \n"))
-#     print(option)
-#     print('debug operator 1')
-#     # operations = [withdrawalOperation(acc_num), depositOperation(acc_num),
-#     #               submitComplaint(acc_num), checkBalance(acc_num),
-#     #               logout()]
-#     print('debug operator 2')
-#     # if operations.get(option):
-#     #     print('debug operator')
-#     #     operations[option]
-
 
 def transaction(accountNumberFromUser):
     print("\nWhat Would You Like To Do: \n 1. Make A Withdrawal \n 2. Cash Deposit \n 3. Submit A Complaint \n 4. "
           "Check Balance \n 5. Log out \n")
-    acc_num = accountNumberFromUser
-    print('debug transact')
     option = int(input("Please select an option: \n"))
-    # operation_selector(option, acc_num)
 
     if option == 1:
         withdrawalOperation(accountNumberFromUser)
-
 
     elif option == 2:
         depositOperation(accountNumberFromUser)
@@ -167,23 +145,6 @@ def register():
         login()
 
 
-# def check(name, password):
-#     userID = allowed_users.index(name)
-#     if (name in allowed_users) and (password == allowed_password[userID]):
-#         return True
-#     else:
-#         return False
-#
-#
-# def check_credentials(name, password):
-#     if check(name, password):
-#         print(f"Welcome {name}, Logged in on {datetime.now().strftime('%B %d, %Y %H:%M:%S')} \n")
-#         return True
-#     else:
-#         print("Invalid Credentials! \n")
-#         return False
-
-
 def init():
     print("============== Welcome to AIG Bank ==============")
     try:
@@ -202,27 +163,6 @@ def init():
         print("Please enter a valid number (1 or 2)")
         init()
 
-
-# def mock_atm():
-#     name = input("Please Enter Your Name: \n")
-#     password = input ("Please Enter Your Password: \n")
-#
-#     if check_credentials(name, password):
-#         transaction(name, password)
-#         print("\nWould You Like To Perform Another Transaction?")
-#         response = input("Yes or No \n").lower()
-#
-#         while response == 'yes':
-#             transaction(name, password)
-#             print("\nWould You Like To Perform Another Transaction?")
-#             response = input("Yes or No \n").lower()
-#         print("Do Have A Nice Day!")
-#     else:
-#         reply = input("Would You Like To Try Again? \n Enter Yes or No: \n ").lower()
-#         if reply == 'yes':
-#             mock_atm()
-#         else:
-#              print("Do Have A Nice Day!")
 
 if __name__ == "__main__":
     init()
