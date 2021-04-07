@@ -1,6 +1,7 @@
-from datetime import datetime
+import random
+import re
 from collections import defaultdict
-import random, re
+from datetime import datetime
 
 database = {'0267962177': ['Seyi', 'Michael', 'seyi.michael@gmail.com', 'passwordSeyi', 24197],
             '0117562516': ['Mike', "Eneramo", 'mike.eneramo@yahoo.com', 'passwordMike', 45144],
@@ -14,43 +15,61 @@ def response(acc_num):
     print("\nWould You Like To Perform Another Transaction?")
 
     try:
-        response = int(input(" 1 (Yes) or 2 (No): \n"))
-        if response == 1:
+        res = int(input(" 1 (Yes) or 2 (No): \n"))
+        if res == 1:
             transaction(acc_num)
-        else:
+        if res == 2:
+            print("Thank You For Banking With Us, Enjoy The Rest Of Your Day!")
             exit()
+        else:
+            print("You Have Selected An Invalid Option, Try Again")
+            response(acc_num)
+
     except ValueError:
-        print("You have entered an invalid number")
-        exit()
+        print("You Have Entered An Invalid Number")
+        response(acc_num)
 
 
 def withdrawalOperation(accountNumberFromUser):
     acc_num = accountNumberFromUser
-    withdraw = float(input("How Much Would You Like To Withdraw? \n"))
 
-    if withdraw <= database[acc_num][4]:
-        database[acc_num][4] -= withdraw
-        print('Please Take Your Cash!')
-        response(acc_num)
+    try:
+        withdraw = float(input("How Much Would You Like To Withdraw? \n"))
 
-    else:
-        print('You Have Insufficient Funds To Complete This Transaction \n')
-        response(acc_num)
+        if withdraw <= database[acc_num][4]:
+            database[acc_num][4] -= withdraw
+            print('Please Take Your Cash!')
+            response(acc_num)
+
+        else:
+            print('You Have Insufficient Funds To Complete This Transaction \n')
+            response(acc_num)
+    except ValueError:
+        print("Please Enter a Valid Number \n")
+        withdrawalOperation(accountNumberFromUser)
+
+
 
 
 def depositOperation(accountNumberFromUser):
     acc_num = accountNumberFromUser
-    deposit = float(input("How Much Would You Like To Deposit? \n"))
-    database[acc_num][4] += deposit
-    print(f"Deposit of ${deposit} was successful! \nYour Current Balance is ${database[acc_num][4]}")
-    response(acc_num)
+
+    try:
+        deposit = float(input("How Much Would You Like To Deposit? \n"))
+        database[acc_num][4] += deposit
+        print(f"Deposit Of ${deposit} Was Successful! \nYour Current Balance Is ${database[acc_num][4]}")
+        response(acc_num)
+
+    except ValueError:
+        print("Please Enter A Valid Number \n")
+        depositOperation(accountNumberFromUser)
 
 
 def submitComplaint(accountNumberFromUser):
     acc_num = accountNumberFromUser
-    complaint = input("What issue will you like to report? \n")
+    complaint = input("What Issue Would You Like To Report? \n")
     complaint_log[acc_num].append(complaint)
-    print("\nThank you for contacting us!")
+    print("\nThank You For Contacting Us!")
     response(acc_num)
 
 
@@ -75,30 +94,36 @@ def logout():
 def transaction(accountNumberFromUser):
     print("\nWhat Would You Like To Do: \n 1. Make A Withdrawal \n 2. Cash Deposit \n 3. Submit A Complaint \n 4. "
           "Check Balance \n 5. Log out \n")
-    option = int(input("Please select an option: \n"))
 
-    if option == 1:
-        withdrawalOperation(accountNumberFromUser)
+    try:
+        option = int(input("Please Select An Option: \n"))
 
-    elif option == 2:
-        depositOperation(accountNumberFromUser)
+        if option == 1:
+            withdrawalOperation(accountNumberFromUser)
 
-    elif option == 3:
-        submitComplaint(accountNumberFromUser)
+        elif option == 2:
+            depositOperation(accountNumberFromUser)
 
-    elif option == 4:
-        checkBalance(accountNumberFromUser)
+        elif option == 3:
+            submitComplaint(accountNumberFromUser)
 
-    elif option == 5:
-        logout()
+        elif option == 4:
+            checkBalance(accountNumberFromUser)
 
-    else:
-        print("Invalid Option Selected, Please Try Again \n")
+        elif option == 5:
+            logout()
+
+        else:
+            print("Invalid Option Selected, Please Try Again \n")
+            transaction(accountNumberFromUser)
+
+    except ValueError:
+        print("You Have Entered An InValid Number, Try Again \n")
         transaction(accountNumberFromUser)
 
 
 def login():
-    print("********* Welcome to AIG Bank Login Portal ***********")
+    print("\n********* Welcome to AIG Bank Login Portal ***********")
 
     accountNumberFromUser = input("Enter Your Account Number: \n")
     passwordFromUser = input("Enter your password: \n")
@@ -109,46 +134,84 @@ def login():
         print(f"\nWelcome {name}, Logged in on {today} ")
         transaction(accountNumberFromUser)
     else:
-        print('Invalid account or password')
+        print('Invalid Account Number or Password')
         init()
 
 
-def checkEmail(email_addr):
+def check_email(email):
     p = re.compile('\S+@\S+\.?')
-    if re.search(p, email_addr):
+
+    if re.search(p, email):
         return True
+
     else:
-        print('Please Enter a valid email eg example@email.com \n')
-        register()
         return False
+
+
+def email_caller():
+    email = input("Enter Your Email Address? eg example@email.com \n")
+    if check_email(email):
+        return email
+    else:
+        return email_caller()
+
+
+def password_checker(password):
+    reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$"
+
+    pat = re.compile(reg)
+    match = re.search(pat, password)
+
+    if match:
+        return True
+
+    else:
+        return False
+
+
+def password_caller():
+    password = input("\nChoose your password\n"
+                     "--------------------------------\n"                        
+                     "Conditions For A Valid Password: \n"
+                     "--------------------------------\n"
+                     "1. Should have at least one number.\n"
+                     "2. Should have at least one uppercase and one lowercase character. \n"
+                     "3. Should have at least one special symbol. \n"
+                     "4. Should be between 6 to 20 characters long.\n"
+                     "\nEnter your password: \n")
+
+    if password_checker(password):
+        return password
+
+    else:
+        return password_caller()
 
 
 def register():
     print("****** Welcome, To Create A New Account Enter Your Details: ******* \n")
 
-    email = input("What is your email address? eg example@email.com \n")
+    first_name: str = (input("What Is Your First Name? \n")).capitalize()
+    last_name = (input("What Is Your Last Name? \n")).capitalize()
+    email = email_caller()
+    password = password_caller()
 
-    if checkEmail(email):
-        first_name: str = (input("What is your first name? \n")).capitalize()
-        last_name = (input("What is your last name? \n")).capitalize()
-        password = input("Enter your password \n")
+    accountNumber = generateAccountNumber()
+    database[accountNumber] = [first_name, last_name, email, password, 0]
 
-        accountNumber = generateAccountNumber()
-        database[accountNumber] = [first_name, last_name, email, password, 0]
+    print("\nYour Account Has Been Created Successfully!")
+    print("===================" * 3)
+    print(f"Your Account Number Is: {accountNumber}")
+    print("===================" * 3)
+    print("Make Sure You Keep It Safe\n")
 
-        print("Your Account Has been created successfully!")
-        print("===================" * 3)
-        print(f"Your account number is: {accountNumber}")
-        print("===================" * 3)
-        print("Make sure you keep it safe\n")
-
-        login()
+    login()
 
 
 def init():
     print("============== Welcome to AIG Bank ==============")
+
     try:
-        haveAccount = int(input("Do you have an account with us?: 1 (yes) 2 (no) \n"))
+        haveAccount = int(input("Do You Have An Account With Us?: 1 (yes) 2 (no) \n"))
 
         if haveAccount == 1:
             login()
@@ -157,10 +220,11 @@ def init():
             register()
 
         else:
-            print("You have selected an invalid option")
+            print("You Have Selected An Invalid Option")
             init()
+
     except ValueError:
-        print("Please enter a valid number (1 or 2)")
+        print("Please Enter A Valid Number (1 or 2)")
         init()
 
 

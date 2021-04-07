@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Zuritraining.iml" filepath="$PROJECT_DIR$/.idea/Zuritraining.iml" />
-      <module fileurl="file://$USER_HOME$/PycharmProjects/pythonclass/.idea/pythonclass.iml" filepath="$USER_HOME$/PycharmProjects/pythonclass/.idea/pythonclass.iml" />
     </modules>
   </component>
 </project>
